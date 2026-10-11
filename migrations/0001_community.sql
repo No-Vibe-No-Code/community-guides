@@ -9,9 +9,9 @@ CREATE TABLE community_guides (
 );
 CREATE INDEX community_catalogue ON community_guides(status,hidden,published_at DESC,id);
 CREATE INDEX community_owner ON community_guides(owner_id,updated_at DESC);
-CREATE TRIGGER community_guide_capacity BEFORE INSERT ON community_guides BEGIN
- SELECT CASE WHEN (SELECT COUNT(*) FROM community_guides WHERE owner_id=NEW.owner_id)>=50 OR (SELECT COUNT(*) FROM community_guides)>=10000 THEN RAISE(ABORT,'Community guide quota reached') END;
-END;
+CREATE TRIGGER community_guide_capacity BEFORE INSERT ON community_guides
+WHEN (SELECT COUNT(*) FROM community_guides WHERE owner_id=NEW.owner_id)>=50 OR (SELECT COUNT(*) FROM community_guides)>=10000
+BEGIN SELECT RAISE(ABORT,'Community guide quota reached'); END;
 CREATE TABLE community_assets (
  id TEXT PRIMARY KEY, guide_id TEXT NOT NULL REFERENCES community_guides(id) ON DELETE CASCADE,
  owner_id TEXT NOT NULL, object_key TEXT NOT NULL UNIQUE, bytes INTEGER NOT NULL CHECK(bytes>0 AND bytes<=5000000),
@@ -19,12 +19,12 @@ CREATE TABLE community_assets (
 );
 CREATE INDEX community_asset_owner ON community_assets(owner_id);
 CREATE INDEX community_asset_guide ON community_assets(guide_id,state);
-CREATE TRIGGER community_asset_capacity BEFORE INSERT ON community_assets BEGIN
- SELECT CASE WHEN COALESCE((SELECT SUM(bytes) FROM community_assets WHERE owner_id=NEW.owner_id),0)+NEW.bytes>100000000
+CREATE TRIGGER community_asset_capacity BEFORE INSERT ON community_assets
+WHEN COALESCE((SELECT SUM(bytes) FROM community_assets WHERE owner_id=NEW.owner_id),0)+NEW.bytes>100000000
  OR COALESCE((SELECT SUM(bytes) FROM community_assets WHERE guide_id=NEW.guide_id),0)+NEW.bytes>25000000
  OR COALESCE((SELECT SUM(bytes) FROM community_assets),0)+NEW.bytes>2000000000
- OR (SELECT COUNT(*) FROM community_assets WHERE guide_id=NEW.guide_id)>=50 THEN RAISE(ABORT,'Community image quota reached') END;
-END;
+ OR (SELECT COUNT(*) FROM community_assets WHERE guide_id=NEW.guide_id)>=50
+BEGIN SELECT RAISE(ABORT,'Community image quota reached'); END;
 CREATE TABLE community_progress (
  user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE, guide_id TEXT NOT NULL REFERENCES community_guides(id) ON DELETE CASCADE,
  step_id TEXT NOT NULL, completed INTEGER NOT NULL CHECK(completed IN (0,1)), updated_at TEXT NOT NULL,
