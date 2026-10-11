@@ -1,3 +1,4 @@
+export const externalArrow='<svg class="cg-external-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M6 18 18 6M6 6h12v12"/></svg>';
 export const esc = value => String(value ?? '').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 export const rating = level => `${level<=3?'EZ':level<=6?'HD':level<=12?'IN':'AT'} ${level}`;
 export const badge = level => `<span class="cg-badge ${rating(level).split(' ')[0].toLowerCase()}">${rating(level)}</span>`;
@@ -9,7 +10,7 @@ function inline(text) {
  const keep = html => {tokens.push(html);return `\u0000${tokens.length-1}\u0000`;};
  let out=String(text).replace(/\u0000/g,'');
  out=out.replace(/`([^`]+)`/g,(_,code)=>keep('<code>'+esc(code)+'</code>'));
- out=out.replace(/\[([^\]\n]+)\]\((https?:\/\/[^\s)]+)\)/g,(_,label,href)=>{const url=safeLink(href);return url?keep(`<a href="${esc(url)}" target="_blank" rel="noopener noreferrer">${esc(label)} ↗</a>`):label;});
+ out=out.replace(/\[([^\]\n]+)\]\((https?:\/\/[^\s)]+)\)/g,(_,label,href)=>{const url=safeLink(href);return url?keep(`<a href="${esc(url)}" target="_blank" rel="noopener noreferrer">${esc(label)} ${externalArrow}</a>`):label;});
  out=esc(out).replace(/\*\*([^*]+)\*\*/g,'<strong>$1</strong>').replace(/\*([^*]+)\*/g,'<em>$1</em>');
  return out.replace(/\u0000(\d+)\u0000/g,(_,i)=>tokens[Number(i)]||'');
 }

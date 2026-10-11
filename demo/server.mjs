@@ -21,7 +21,7 @@ createServer(async(req,res)=>{
    let path=decodeURIComponent(url.pathname);if(path.includes('..'))throw Error('Bad path');if(path==='/community'||path.startsWith('/community/'))path='/community/index.html';else if(path.endsWith('/'))path+='index.html';
    const root=resolve(hostAssets),file=resolve(root,'.'+path);if(!file.startsWith(root+'/'))throw Error('Bad path');const data=await readFile(file);res.writeHead(200,{'content-type':contentType(file)});res.end(data);return;
   }
-  if(url.pathname.startsWith('/web/')||url.pathname.startsWith('/server/')){const path=resolve(base,'.'+decodeURIComponent(url.pathname));if(!path.startsWith(base+'/'))throw Error('Bad path');res.writeHead(200,{'content-type':contentType(path)});res.end(await readFile(path));return;}
+  if(url.pathname.startsWith('/web/')||url.pathname.startsWith('/server/')){const path=resolve(base,'.'+decodeURIComponent(url.pathname));if(!['web','server'].some(folder=>path.startsWith(join(base,folder)+'/'))||!['.js','.css'].includes(extname(path)))throw Error('Bad path');res.writeHead(200,{'content-type':contentType(path)});res.end(await readFile(path));return;}
   res.writeHead(200,{'content-type':'text/html'});res.end(await readFile(join(base,'demo/index.html')));
  }catch(error){res.writeHead(404,{'content-type':'text/plain'});res.end('Not found');}
 }).listen(port,'127.0.0.1',()=>console.log(`Community preview: http://127.0.0.1:${port}/community/ (ephemeral demo data)`));
