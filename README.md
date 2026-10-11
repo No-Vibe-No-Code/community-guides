@@ -46,4 +46,4 @@ API writes require the exact signed-in account ID, CSRF and live session. Revisi
 - `tests/`: SQLite-backed behavior and boundary tests.
 - `demo/`: standalone local preview with disposable accounts.
 
-The requested destination is `NoVibeNoCode/community-guides`, mounted as `community/` in the host repository. Hosting setup is recorded in the host's `docs/community-guides.md`; do not assume the GitHub namespace is available until it has been verified.
+Source: [No-Vibe-No-Code/community-guides](https://github.com/No-Vibe-No-Code/community-guides). The [host repository](https://github.com/UnoxyRich/no-vibe-no-code-site) pins a published commit as the `community/` Git submodule. Clone the host with `git clone --recurse-submodules`, or run `git submodule update --init --recursive` in an existing checkout. See the [host release instructions](https://github.com/UnoxyRich/no-vibe-no-code-site/blob/main/docs/community-guides.md) for deployment and production storage bindings.

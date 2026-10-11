@@ -14,4 +14,13 @@ Never commit tokens, `.env` files, `.dev.vars`, production database exports or r
 
 For schema changes, add an ordered migration and coordinate the corresponding host migration before deployment. For an API or rendering change, check the old published version of a guide while editing its new private draft. Preserve stable step IDs on edits so members do not lose their progress.
 
-The host pins a released module commit when the Git submodule is configured. Merging module code alone does not release a new site. The host maintainer updates the pin, runs the short integration checks, then deploys both Workers if needed.
+## Maintainer releases
+
+The host pins a released module commit in its `community/` Git submodule. Merging module code alone does not release the website.
+
+1. Run `npm run check` and `npm test` here, commit the change, and push this repository's `main` first. Confirm the child commit is available on GitHub before updating the host.
+2. In the host, run `git submodule update --init --recursive`, fetch the child's `main`, and check out the reviewed published child commit in `community/`.
+3. Run `npm run build:guides` and `npm run test:community` in the host. Commit the `community` pin and any integration changes, integrate newer remote work without force-pushing, and push the host's `main`.
+4. Deploy through the host scripts. Deploy the main Worker first if API code or bindings changed, then Guides using `npm run deploy:guides`. This builds `guides/published` and retains competition route/asset gating. Verify the live page and release before recording deployment facts in the host documentation.
+
+Release pin updates are manual; there is no automatic dispatch. Contributor and pull-request checks have read-only repository permissions and receive no deployment secrets. Keep `demo/` local. Source extraction and pin updates do not recreate D1/R2 storage or reapply an already-applied migration.
