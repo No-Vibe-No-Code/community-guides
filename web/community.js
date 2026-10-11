@@ -120,6 +120,8 @@ function mount(scene){
   box.querySelector('[data-close]').onclick=close;box.addEventListener('cancel',event=>{event.preventDefault();close();});box.addEventListener('close',()=>box.remove(),{once:true});signal.addEventListener('abort',()=>box.remove(),{once:true});box.showModal();if(!matchMedia('(prefers-reduced-motion: reduce)').matches)box.animate([{opacity:0,transform:'translateY(18px)'},{opacity:1,transform:'translateY(0)'}],{duration:280,easing:'cubic-bezier(.16,.8,.25,1)'});return box;
  }
  on(root,'click',async event=>{
+  const accountLink=event.target.closest('a[href]');
+  if(accountLink && !event.defaultPrevented && event.button===0 && !event.metaKey && !event.ctrlKey && !event.altKey && !event.shiftKey && window.GuideScene.leaveForAccount){const url=new URL(accountLink.href);if(!accountLink.target&&url.origin==='https://novibenocode.ccwu.cc'&&url.pathname==='/'&&url.searchParams.get('account')==='login'){event.preventDefault();await window.GuideScene.leaveForAccount(url.href);return;}}
   const control=event.target.closest('[data-action],.cg-complete');if(!control)return;
   const action=control.dataset.action;event.preventDefault();
   try{
