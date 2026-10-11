@@ -1,0 +1,1 @@
+{"name":"@novibenocode/community-guides","version":"1.0.0","private":true,"type":"module","scripts":{"dev":"node demo/server.mjs","test":"node --test tests/*.test.mjs","check":"node --check server/api.js && node --check web/community.js"},"engines":{"node":">=24"}}
